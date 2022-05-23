@@ -13,9 +13,9 @@ fetch('http://localhost:3000/api/products')
             console.log('Il y a un problème: ', error);
         });
 
-const product = function(data) {
-    console.log(data);
-    for ( let i = 0; i < data.length; i++) {
+function product(data) {
+    // console.log(data);
+    for (let i = 0; i < data.length; i++) {
         const html = `<section id="items"> 
                         <a href="./product.html?id=${data[i]._id}">
                             <article>
@@ -25,9 +25,9 @@ const product = function(data) {
                             </article>
                         </a>
                     </section>`;
-    products.insertAdjacentHTML("beforeend", html);
+        products.insertAdjacentHTML("beforeend", html);
     }
-};
+}
 
 
 
