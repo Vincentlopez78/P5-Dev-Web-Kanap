@@ -2,11 +2,11 @@
 const str = window.location;
 const url = new URL(str);
 const produitId = url.searchParams.get("id");
-const objetUrl = "http://localhost:3000/api/products" + produitId;
+const objetUrl = "http://localhost:3000/api/products/" + produitId;
 
 //requete API
 function produitHtml() {
-    fetch('http://localhost:3000/api/products' + produitId)
+    fetch('http://localhost:3000/api/products/' + produitId)
         .then(function(res) {
             return res.json();
         })
@@ -15,15 +15,14 @@ function produitHtml() {
             //Il y a une erreur
             console.log(error);
         })
-
-    //Ajout des données(img, titre, prix, description, couleur et nbre article) du produit de l'API vers le DOM
+        //Ajout des données(img, titre, prix, description, couleur et nbre article) du produit de l'API vers le DOM
         .then(function(getProduit) {
             const product = getProduit;
             
             let produitImage = document.createElement('img');
             document.querySelector('.item__img').appendChild(produitImage);
-            produitImage.setAttribute("src", `${product.imageUrl}`);
-            produitImage.setAttribute("alt", `${product.altTxt}`);
+            produitImage.setAttribute('src', `${product.imageUrl}`);
+            produitImage.setAttribute('alt', `${product.altTxt}`);
 
             let produitTitle = document.getElementById('title');
             produitTitle.textContent = `${product.name}`;
@@ -33,5 +32,14 @@ function produitHtml() {
 
             let produitDescription = document.getElementById('description');
             produitDescription.textContent = `${product.description}`;
+
+            document.querySelector('#colors').insertAdjacentHTML('beforeend', 
+                        product.colors.map(
+                            (color) => 
+                                `<option value="${color}">${color}</option>`
+                                )
+                            );
         });
-}
+        
+};
+produitHtml();
