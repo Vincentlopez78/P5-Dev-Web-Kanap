@@ -40,6 +40,33 @@ function produitHtml() {
                                 )
                             );
         });
-        
+    AddToPanier(objetUrl);
 };
+
 produitHtml();
+
+// Ajout au panier
+
+function AddToPanier(objetUrl) {
+    let btnPanier = document.getElementById('addToCart');
+    console.log(btnPanier);
+    btnPanier.addEventListener('click', (event) => {
+        produitPanier = JSON.parse(localStorage.getItem('produit'));
+        let choiceColor = document.getElementById('colors');
+        console.log(colors.value);
+        console.log(produitPanier);
+
+        const produitColor = Object.assign({} , objetUrl, {
+            color : `${colors.value}`,
+            quantité: 1
+        });
+        console.log(produitColor)
+
+        if(produitPanier == null) {
+            produitPanier = [];
+            produitPanier.push(produitColor);
+            console.log(produitPanier);
+            localStorage.setItem('produit' , JSON.stringify(produitPanier));
+        }
+    })
+};
