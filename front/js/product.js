@@ -1,12 +1,15 @@
 // récupération de l'id
-const str = window.location;
+const str = window.location.href;
 const url = new URL(str);
+//console.log(url);
 const produitId = url.searchParams.get("id");
 const objetUrl = "http://localhost:3000/api/products/" + produitId;
 
+
+
 //requete API
 function produitHtml() {
-    fetch('http://localhost:3000/api/products/' + produitId)
+    fetch(objetUrl)
         .then(function(res) {
             return res.json();
         })
@@ -48,25 +51,56 @@ produitHtml();
 // Ajout au panier
 
 function AddToPanier(objetUrl) {
-    let btnPanier = document.getElementById('addToCart');
-    console.log(btnPanier);
-    btnPanier.addEventListener('click', (event) => {
-        produitPanier = JSON.parse(localStorage.getItem('produit'));
-        let choiceColor = document.getElementById('colors');
-        console.log(colors.value);
-        console.log(produitPanier);
+    
+    let produitPanier = document.querySelector('#addToCart');
+    console.log(produitPanier);
+    
+    produitPanier.addEventListener('click', (event) => {
+    
+        
+        let panierQuantity = document.getElementById('quantity').value;
 
-        const produitColor = Object.assign({} , objetUrl, {
-            color : `${colors.value}`,
-            quantité: 1
-        });
-        console.log(produitColor)
+        let colorChoice = document.getElementById('colors');
+        let produitColor = colorChoice.options[colorChoice.selectedIndex].text;
 
-        if(produitPanier == null) {
-            produitPanier = [];
-            produitPanier.push(produitColor);
-            console.log(produitPanier);
-            localStorage.setItem('produit' , JSON.stringify(produitPanier));
+        //création de l'objet produit
+        var produit = {
+            id: produitId,
+            couleur: produitColor,
+            quantity: panierQuantity
+        };
+
+        //création du LocalStorage
+        let panier = localStorage.getItem("panier");
+
+        //si premier article mis dans le panier = création du panier, sinon ajout de l'article dans le panier
+        if (produitPanier == null) {
+            panier = [];
+        } else {
+            panier = JSON.parse(panier);
         }
-    })
+
+        //constante qui dis que si le même produit et la même couleur est ajouté alors augmenté juste la quantité
+        const indexProduit = (item) => (item.id == produit.id) && (item.couleur == produit.couleur);
+        let index = panier.findIndex(indexProduit);
+
+        if (index == -1) {
+            panier.push(produit);
+            console.log(produit);
+        } else {
+            console.log(produit);
+
+            let totalQuantity = parseInt(panier[index].quantity) + parseInt(produit.quantity);
+
+            panier[index].quantity = totalQuantity; // modification de la quantité
+        }
+
+        panier = JSON.stringify(panier);
+
+        localStorage.setItem('panier', panier); 
+
+        event.preventDefault(); //pour empêcher le changement de la page
+    });
 };
+
+
