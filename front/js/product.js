@@ -21,9 +21,11 @@ function produitHtml() {
         //Ajout des données(img, titre, prix, description, couleur et nbre article) du produit de l'API vers le DOM
         .then(function(getProduit) {
             const product = getProduit;
+            //console.log(getProduit)
             
             let produitImage = document.createElement('img');
             document.querySelector('.item__img').appendChild(produitImage);
+            console.log(document.querySelector('.item__img').appendChild(produitImage));
             produitImage.setAttribute('src', `${product.imageUrl}`);
             produitImage.setAttribute('alt', `${product.altTxt}`);
 

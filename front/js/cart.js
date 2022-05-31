@@ -1,5 +1,5 @@
 // récupération du LocalStorage
-let localPanier = JSON.parse(localStorage.getItem("produitPanier"));
+let localPanier = JSON.parse(localStorage.getItem("panier"));
 
 //recupération de l'API
 function produitId(id) {
@@ -19,10 +19,11 @@ function produitId(id) {
 function affichageProduit() {
 
     const panierCart = document.getElementById("cart__items");
+    console.log(document.getElementById("cart__items"))
     let panierHtml = [];
     //Si panier vide alors crée un tableau
     if (localPanier === null || localPanier == 0) {
-        panierCart.textContent = "votre panier est vide";
+        panierCart.textContent = "Pas de Kanap dans le panier";
     } else {
         //Si panier pas vide alors rajoute un produit
         for (i = 0; i < localPanier.length; i++) {
@@ -42,7 +43,7 @@ function affichageProduit() {
                     <div class="cart__item__content__settings">
                         <div class="cart__item__content__settings__quantity">
                             <p>Qté : </p>
-                            <input data-id=${localPanier[i].id}  data-color=${localPanier[i].color} type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="42">
+                            <input data-id=${localPanier[i].id}  data-color=${localPanier[i].color} type="number" class="itemQuantity" name="itemQuantity" min="1" max="100">
                         </div>
                         <div class="cart__item__content__settings__delete">
                             <p data-id=${localPanier[i].id}  data-color=${localPanier[i].color} class="deleteItem">Supprimer</p>
@@ -51,6 +52,7 @@ function affichageProduit() {
                 </div>
                 </article>`;
         }
+        panierCart.insertAdjacentHTML("beforeend", panierHtml);
     }
 }
 
