@@ -73,17 +73,10 @@ function AddToPanier(objetUrl) {
         };
 
         //création du LocalStorage
-        let panier = localStorage.getItem("panier");
-
-        //si premier article mis dans le panier = création du panier, sinon ajout de l'article dans le panier
-        if (produitPanier == null) {
-            panier = [];
-        } else {
-            panier = JSON.parse(panier);
-        }
+        let panier = JSON.parse(localStorage.getItem("panier"));
 
         //constante qui dis que si le même produit et la même couleur est ajouté alors augmenté juste la quantité
-        const indexProduit = (item) => (item.id == produit.id) && (item.couleur == produit.couleur);
+        const indexProduit = (item) => (item.id === produit.id) && (item.couleur === produit.couleur);
         let index = panier.findIndex(indexProduit);
 
         if (index == -1) {
