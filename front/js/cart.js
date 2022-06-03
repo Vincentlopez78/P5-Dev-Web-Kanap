@@ -20,7 +20,7 @@ function getProduitById(id) {
 async function affichageProduit() {
 
     const panierCart = document.getElementById("cart__items");
-    console.log(document.getElementById("cart__items"))
+    
     let panierHtml = [];
     //Si panier vide alors crée un tableau
     if (localPanier === null || localPanier == 0) {
@@ -39,12 +39,12 @@ async function affichageProduit() {
                     <div class="cart__item__content__description">
                         <h2>${produit.name}</h2>
                         <p>${localPanier[i].couleur}</p>
-                        <p>${prixTotal}</p>
+                        <p>${prixTotal}€</p>
                     </div>
                     <div class="cart__item__content__settings">
                         <div class="cart__item__content__settings__quantity">
                             <p>Qté : </p>
-                            <input data-id=${localPanier[i].id}  data-color=${localPanier[i].couleur} type="number" class="itemQuantity" name="itemQuantity" min="1" max="100">
+                            <input data-id=${localPanier[i].id}  data-color=${localPanier[i].couleur} type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value=${localPanier[i].quantity}>
                         </div>
                         <div class="cart__item__content__settings__delete">
                             <p data-id=${localPanier[i].id}  data-color=${localPanier[i].couleur} class="deleteItem">Supprimer</p>
@@ -54,7 +54,19 @@ async function affichageProduit() {
                 </article>`;
         }
         panierCart.insertAdjacentHTML("beforeend", panierHtml);
+
+        //Prix total du panier
+        let quantityTotal = 0;
+        let panierTotal = 0;
+
+        for(i = 0; i < localPanier.length; i++) {
+            const kanap = await getProduitById(localPanier[i].id)
+            quantityTotal += parseInt(localPanier[i].quantity);
+            panierTotal += parseInt(kanap.price * localPanier[i].quantity);
+        };
+
+        document.getElementById('totalQuantity').innerHTML = quantityTotal;
+        document.getElementById('totalPrice').innerHTML = panierTotal;
     }
 }
-
 affichageProduit();
