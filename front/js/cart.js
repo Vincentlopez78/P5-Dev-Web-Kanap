@@ -67,6 +67,34 @@ async function affichageProduit() {
 
         document.getElementById('totalQuantity').innerHTML = quantityTotal;
         document.getElementById('totalPrice').innerHTML = panierTotal;
+    
+        modifyQuantity();
     }
 }
 affichageProduit();
+
+function modifyQuantity() {
+    let itemQuantity = document.querySelectorAll(".itemQuantity");
+
+    itemQuantity.forEach((produitQuantity) => {
+        let articleQuantity = produitQuantity.closest("article");
+        console.log(produitQuantity.closest("article"));
+        let articleId = articleQuantity.dataset.id;
+        console.log(articleId);
+
+        let articleColor = articleQuantity.dataset.color;
+        console.log(articleColor);
+
+        produitQuantity.addEventListener("change", () => {
+            let newQuantity = Number(produitQuantity.value);
+
+            localPanier.forEach((element) => {
+                if (element.produitId == articleId && element.couleur == articleColor) {
+                    element.quantity = newQuantity;
+                }
+            });
+            localStorage.setItem("panier", JSON.stringify(localPanier));
+            window.location.reload();
+        });
+    });
+}
