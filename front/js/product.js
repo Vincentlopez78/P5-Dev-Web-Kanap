@@ -59,7 +59,6 @@ function AddToPanier(objetUrl) {
     
     produitPanier.addEventListener('click', (event) => {
     
-        
         let panierQuantity = document.getElementById('quantity').value;
 
         let colorChoice = document.getElementById('colors');
@@ -95,6 +94,7 @@ function AddToPanier(objetUrl) {
         localStorage.setItem('panier', panier); 
 
         event.preventDefault(); //pour empêcher le changement de la page
+        alert("produit ajouté au panier");
     });
 };
 

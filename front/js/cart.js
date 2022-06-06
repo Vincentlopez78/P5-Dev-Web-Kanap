@@ -60,41 +60,55 @@ async function affichageProduit() {
         let panierTotal = 0;
 
         for(i = 0; i < localPanier.length; i++) {
-            const kanap = await getProduitById(localPanier[i].id)
+            const kanap = await getProduitById(localPanier[i].id);
             quantityTotal += parseInt(localPanier[i].quantity);
             panierTotal += parseInt(kanap.price * localPanier[i].quantity);
         };
 
         document.getElementById('totalQuantity').innerHTML = quantityTotal;
         document.getElementById('totalPrice').innerHTML = panierTotal;
-    
-        modifyQuantity();
     }
+    modifyQuantity();
+    deleteProduct();
 }
 affichageProduit();
 
 function modifyQuantity() {
-    let itemQuantity = document.querySelectorAll(".itemQuantity");
+    let itemQuantity = document.getElementsByClassName(".itemQuantity");
 
-    itemQuantity.forEach((produitQuantity) => {
-        let articleQuantity = produitQuantity.closest("article");
-        console.log(produitQuantity.closest("article"));
-        let articleId = articleQuantity.dataset.id;
-        console.log(articleId);
+    for (i= 0; i < itemQuantity.length; i++) {
+        let input = itemQuantity[i];
+        input.addEventListener("change", (event) => {
+            event.preventDefault();
+            let input = event.target;
 
-        let articleColor = articleQuantity.dataset.color;
-        console.log(articleColor);
+            if (input.value <= 0) {
+                alert("Il n'est pas possible d'avoir moins de zéro kanap. Veuillez supprimer le Kanap");
+                location.reload();
+            } else {
+                localPanier[i].quantity = parseInt(input.value);
+                localStorage.setItem("panier", JSON.stringify(localPanier));
+            }
+            affichageProduit();
+        })
+    }
+}
 
-        produitQuantity.addEventListener("change", () => {
-            let newQuantity = Number(produitQuantity.value);
+function deleteProduct() {
+    let deleteBtn = document.querySelectorAll(".deleteItem");
 
-            localPanier.forEach((element) => {
-                if (element.produitId == articleId && element.couleur == articleColor) {
-                    element.quantity = newQuantity;
-                }
-            });
+    for (let d = 0; d < deleteBtn.length; d++) {
+        deleteBtn[d].addEventListener("click", (event) => {
+            event.preventDefault();
+            let buttonClick = event.target;
+            buttonClick.parentElement.parentElement.parentElement.parentElement.remove();
+
+            //suppression dans le lS
+            localPanier.splice(d, 1);
             localStorage.setItem("panier", JSON.stringify(localPanier));
-            window.location.reload();
-        });
-    });
+
+            location.reload();
+            affichageProduit();
+        })
+    }
 }
