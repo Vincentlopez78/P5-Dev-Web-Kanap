@@ -67,18 +67,19 @@ async function affichageProduit() {
 
         document.getElementById('totalQuantity').innerHTML = quantityTotal;
         document.getElementById('totalPrice').innerHTML = panierTotal;
+        modifyQuantity();
+        deleteProduct();
     }
-    modifyQuantity();
-    deleteProduct();
+    
 }
 affichageProduit();
 
 function modifyQuantity() {
-    let itemQuantity = document.getElementsByClassName(".itemQuantity");
+    let itemQuantity = document.querySelectorAll("cart__item__content__settings__quantity");
 
     for (i= 0; i < itemQuantity.length; i++) {
         let input = itemQuantity[i];
-        input.addEventListener("change", (event) => {
+        input.addEventListener("change", function (event) {
             event.preventDefault();
             let input = event.target;
 
@@ -88,8 +89,8 @@ function modifyQuantity() {
             } else {
                 localPanier[i].quantity = parseInt(input.value);
                 localStorage.setItem("panier", JSON.stringify(localPanier));
+                affichageProduit();
             }
-            affichageProduit();
         })
     }
 }
