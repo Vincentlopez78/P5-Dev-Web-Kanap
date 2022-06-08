@@ -55,55 +55,55 @@ async function affichageProduit() {
                 
         }
         panierCart.insertAdjacentHTML("beforeend", panierHtml);
-    }
-    priceQuantitéTotal();
-    modifyQuantity();
-    deleteProduct();
-};
-
-        //----------------------Prix total du panier------------------------
-        
-function priceQuantitéTotal() {
-        let quantityTotal = 0;
-        let panierTotal = 0;
+    };
+    let qttTotal = 0;
+    let priceTotal = 0;
     for(i = 0; i < localPanier.length; i++) {
-            const kanap = getProduitById(localPanier[i].id);
-            quantityTotal += parseInt(localPanier[i].quantity);
-            panierTotal += parseInt(kanap.price * localPanier[i].quantity);
+            const kanap = await getProduitById(localPanier[i].id);
+            qttTotal += parseInt(localPanier[i].quantity);
+            priceTotal += parseInt(kanap.price * localPanier[i].quantity);
         };
 
-        document.getElementById('totalQuantity').innerHTML = quantityTotal;
-        document.getElementById('totalPrice').innerHTML = panierTotal;
-        modifyQuantity();
-        deleteProduct();
-    };
-
+        document.getElementById('totalQuantity').innerHTML = qttTotal;
+        document.getElementById('totalPrice').innerHTML = priceTotal;
+    modifyQtt();
+    deleteProduct();
+};
 affichageProduit();
 
 //----------------------------modification de la quantité
-function modifyQuantity() {
-    let itemQuantity = document.getElementsByClassName("itemQuantity");
-    console.log(document.getElementsByClassName("itemQuantity"))
-    
-    for (i= 0; i < itemQuantity.length; i++) {
-        let inputQuantity = itemQuantity[i];
-        console.log(itemQuantity[i])
-        inputQuantity.addEventListener("change", function (event) {
+function modifyQtt() {
+    let itemsQtt = document.querySelectorAll(".itemQuantity");
+    console.log(document.querySelectorAll(".itemQuantity"));
+    itemsQtt.forEach((inputQtt) => {
+        inputQtt.addEventListener("change", (event) => {
             event.preventDefault();
-            let input = event.target;
+            const input = event.target.value;
+            const dataId = event.target.getAttribute("data-id");
+            const dataColor = event.target.getAttribute("data-color");
+            let panier = localStorage.getItem("panier");
+            let produit = JSON.parse(panier);
 
-            if (input.value <= 0) {
-                alert("Il n'est pas possible d'avoir moins de zéro kanap. Veuillez supprimer le Kanap");
-            } else {
-                localPanier[i].quantity = parseInt(input.value);
-                console.log(input.value);
-                localStorage.setItem("panier", JSON.stringify(localPanier));
-                priceQuantitéTotal();
-                affichageProduit();
+            produit = produit.map((item, index) => {
+                if (item.id === dataId && item.couleur === dataColor) {
+                    item.quantity = input;
+            } 
+            return item;
+            });
+            if (input > 100) {
+                alert("la quantité maximum autorisée est de cent Kanap");
+                location.reload();
+                return;
+            } else if (input <= 0) {
+                alert("Veuillez supprimé le Kanap");
+                location.reload();
+                return;
             }
-        })
-    }
-    
+            let produitString = JSON.stringify(produit);
+            localStorage.setItem("panier", produitString);
+            location.reload();
+        });
+    });
 };
 //-----------------------------suppréssion du produit
 function deleteProduct() {
@@ -120,7 +120,7 @@ function deleteProduct() {
             localStorage.setItem("panier", JSON.stringify(localPanier));
 
             location.reload();
-            PriceQuantitéTotal();
+            affichageProduit();
         })
     }
 };
