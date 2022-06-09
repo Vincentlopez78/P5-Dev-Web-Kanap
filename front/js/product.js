@@ -77,6 +77,7 @@ function AddToPanier(objetUrl) {
         //constante qui dis que si le même produit et la même couleur est ajouté alors augmenté juste la quantité
         const indexProduit = (item) => (item.id === produit.id) && (item.couleur === produit.couleur);
         let index = panier.findIndex(indexProduit);
+        console.log(indexProduit);
 
         if (index == -1) {
             panier.push(produit);
