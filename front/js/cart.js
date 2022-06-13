@@ -18,7 +18,7 @@ function getProduitById(id) {
     };
 
 async function affichageProduit() {
-
+    console.log(localPanier);
     const panierCart = document.getElementById("cart__items");
     
     let panierHtml = [];

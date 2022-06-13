@@ -45,14 +45,14 @@ function produitHtml() {
                                 )
                             );
         });
-    AddToPanier(objetUrl);
+    AddToPanier();
 };
 
 produitHtml();
 
 // Ajout au panier
 
-function AddToPanier(objetUrl) {
+function AddToPanier() {
     
     let produitPanier = document.querySelector('#addToCart');
     console.log(produitPanier);
@@ -63,7 +63,7 @@ function AddToPanier(objetUrl) {
 
         let colorChoice = document.getElementById('colors');
         let produitColor = colorChoice.options[colorChoice.selectedIndex].text;
-
+        
         //création de l'objet produit
         var produit = {
             id: produitId,
@@ -73,10 +73,17 @@ function AddToPanier(objetUrl) {
 
         //création du LocalStorage
         let panier = JSON.parse(localStorage.getItem("panier"));
-
+        console.log(panier);
+        
         //constante qui dis que si le même produit et la même couleur est ajouté alors augmenté juste la quantité
         const indexProduit = (item) => (item.id === produit.id) && (item.couleur === produit.couleur);
-        let index = panier.findIndex(indexProduit);
+        let index = -1;
+        if (panier === null) {
+            panier = [];
+        }
+        if (panier.size > 0) {
+            index = panier.find(indexProduit);
+        }
         console.log(indexProduit);
 
         if (index == -1) {
