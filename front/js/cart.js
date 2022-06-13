@@ -18,7 +18,7 @@ function getProduitById(id) {
     };
 
 async function affichageProduit() {
-    console.log(localPanier);
+    console.log(localPanier)
     const panierCart = document.getElementById("cart__items");
     
     let panierHtml = [];
@@ -248,24 +248,25 @@ order.addEventListener('click' , (event) => {
         alert("Vous n'avez pas renseigner correctement vos coordonnées.");
     } else {
         let produitClient = [];
-        localPanier.forEach((btnCommander) => {
-            produitClient.push(btnCommander.id);
+        localPanier.forEach((order) => {
+            produitClient.push(order.id);
         });
 
         let pageCommander = {client, produitClient};
-
+        
         fetch("http://localhost:3000/api/products/order", {
             method: "POST",
             headers: {
                 Accept: "application/json",
+                "Content-type": "application/json",
             },
             body: JSON.stringify(pageCommander),
         })
         .then((res) => {
             return res.json();
         })
-        .then((confirmation) => {
-            window.location.href = "./confirmation.html?orderId=" + confirmation.orderId;
+        .then((confirm) => {
+            window.location.href = "./confirmation.html?OrderId=" + confirm.orderId;
             localStorage.clear();
         })
         .catch((err) => {
