@@ -229,6 +229,8 @@ order.addEventListener('click' , (event) => {
         city: city.value,
         email: email.value,
     };
+    
+    let produitClient = [];
 
     if(
         firstName.value === "" ||
@@ -247,30 +249,34 @@ order.addEventListener('click' , (event) => {
     ) {
         alert("Vous n'avez pas renseigner correctement vos coordonnées.");
     } else {
-        let produitClient = [];
-        localPanier.forEach((order) => {
-            produitClient.push(order.id);
-        });
+        localStorage.setItem("client", JSON.stringify(client));
 
-        let pageCommander = {client, produitClient};
+        for(let panier of localPanier) {
+            produitClient.push(panier.id)
+        };
+
+        let pageCommander = {
+            client: client,
+            produitClient: produitClient,
+        };
         
         fetch("http://localhost:3000/api/products/order", {
             method: "POST",
-            headers: {
-                Accept: "application/json",
-                "Content-type": "application/json",
-            },
             body: JSON.stringify(pageCommander),
+            headers: {
+                "Content-Type": "application/json",
+            },
         })
-        .then((res) => {
-            return res.json();
-        })
-        .then((confirm) => {
-            window.location.href = "./confirmation.html?orderId=" + confirm.orderId;
-            localStorage.clear();
-        })
-        .catch((err) => {
-            console.log('une erreur est survenue');
-        });
+            .then((res) => {
+                return res.json();
+            })
+            .then((data) => {
+                let orderId = data.orderId;
+                window.location.assign("confirmation.html?id=" + orderId);
+                localStorage.clear();
+            })
+            .catch((err) => {
+                console.log('une erreur est survenue');
+            });
     }
 });

@@ -63,7 +63,7 @@ function AddToPanier() {
         let colorChoice = document.getElementById('colors').value;
 
         if(colorChoice == "") {
-            alert("Veuillez choisir une couleur pour votre Kanap!")
+            window.alert("Veuillez choisir une couleur pour votre Kanap!")
             return;
         }
         
@@ -105,7 +105,7 @@ function AddToPanier() {
         localStorage.setItem('panier', panier); 
 
         event.preventDefault(); //pour empêcher le changement de la page
-        alert("produit ajouté au panier");
+        window.alert("produit ajouté au panier");
     });
 };
 
