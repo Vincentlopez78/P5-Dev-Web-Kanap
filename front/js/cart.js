@@ -266,7 +266,7 @@ order.addEventListener('click' , (event) => {
             return res.json();
         })
         .then((confirm) => {
-            window.location.href = "./confirmation.html?OrderId=" + confirm.orderId;
+            window.location.href = "./confirmation.html?orderId=" + confirm.orderId;
             localStorage.clear();
         })
         .catch((err) => {

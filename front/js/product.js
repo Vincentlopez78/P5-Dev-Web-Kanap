@@ -60,14 +60,17 @@ function AddToPanier() {
     produitPanier.addEventListener('click', (event) => {
     
         let panierQuantity = document.getElementById('quantity').value;
+        let colorChoice = document.getElementById('colors').value;
 
-        let colorChoice = document.getElementById('colors');
-        let produitColor = colorChoice.options[colorChoice.selectedIndex].text;
+        if(colorChoice == "") {
+            alert("Veuillez choisir une couleur pour votre Kanap!")
+            return;
+        }
         
         //création de l'objet produit
         var produit = {
             id: produitId,
-            couleur: produitColor,
+            couleur: colorChoice,
             quantity: panierQuantity
         };
 
