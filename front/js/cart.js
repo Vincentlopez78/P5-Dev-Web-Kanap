@@ -256,8 +256,8 @@ order.addEventListener('click' , (event) => {
         };
 
         let pageCommander = {
-            client: client,
-            produitClient: produitClient,
+            contact: client,
+            products: produitClient,
         };
         
         fetch("http://localhost:3000/api/products/order", {
