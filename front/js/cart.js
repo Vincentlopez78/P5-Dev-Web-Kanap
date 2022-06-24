@@ -17,6 +17,7 @@ function getProduitById(id) {
         })
     };
 
+// Affichage du produit 
 async function affichageProduit() {
     console.log(localPanier)
     const panierCart = document.getElementById("cart__items");
@@ -249,6 +250,7 @@ order.addEventListener('click' , (event) => {
     ) {
         alert("Vous n'avez pas renseigner correctement vos coordonnées.");
     } else {
+        //Création d'un localStorage pour y mettre les données du formulaire
         localStorage.setItem("client", JSON.stringify(client));
 
         for(let panier of localPanier) {

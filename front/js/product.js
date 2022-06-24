@@ -15,13 +15,11 @@ function produitHtml() {
         })
         
         .catch((error) => {
-            //Il y a une erreur
             console.log(error);
         })
         //Ajout des données(img, titre, prix, description, couleur et nbre article) du produit de l'API vers le DOM
         .then(function(getProduit) {
             const product = getProduit;
-            //console.log(getProduit)
             
             let produitImage = document.createElement('img');
             document.querySelector('.item__img').appendChild(produitImage);
@@ -66,6 +64,16 @@ function AddToPanier() {
             window.alert("Veuillez choisir une couleur pour votre Kanap!")
             return;
         }
+
+        if(panierQuantity <= 0) {
+            window.alert("Veuillez choisir une quantité pour votre Kanap!")
+            return;
+        }
+
+        if(panierQuantity > 100) {
+            window.alert("Vous avez trop de Kanap!")
+            return;
+        }
         
         //création de l'objet produit
         var produit = {
@@ -78,7 +86,7 @@ function AddToPanier() {
         let panier = JSON.parse(localStorage.getItem("panier"));
         console.log(panier);
         
-        //constante qui dis que si le même produit et la même couleur est ajouté alors augmenté juste la quantité
+        //constante qui dis que si le même produit et la même couleur alors augmenté juste la quantité
         const indexProduit = (item) => (item.id === produit.id) && (item.couleur === produit.couleur);
         let index = -1;
         if (panier === null) {

@@ -1,5 +1,6 @@
 const products = document.getElementById('items');
 
+// Appel de l'API
 fetch('http://localhost:3000/api/products')
     .then((response) => {
             if (response.ok) {
@@ -13,8 +14,8 @@ fetch('http://localhost:3000/api/products')
             console.log('Il y a un problème: ', error);
         });
 
+
 function product(data) {
-    // console.log(data);
     for (let i = 0; i < data.length; i++) {
         const html = `<section id="items"> 
                         <a href="./product.html?id=${data[i]._id}">
