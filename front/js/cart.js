@@ -3,7 +3,6 @@ var localPanier = JSON.parse(localStorage.getItem("panier"));
 
 //------------------------recupération de l'API
 function getProduitById(id) {
-    console.log(id);
     return fetch(`http://localhost:3000/api/products/${id}`)
         .then(function(res) {
             return res.json();
@@ -18,8 +17,7 @@ function getProduitById(id) {
     };
 
 // Affichage du produit 
-async function affichageProduit() {
-    console.log(localPanier)
+async function affichageProduct() {
     const panierCart = document.getElementById("cart__items");
     
     let panierHtml = [];
@@ -29,23 +27,24 @@ async function affichageProduit() {
     } else {
         //---------------Si panier pas vide alors rajoute un produit
         for (i = 0; i < localPanier.length; i++) {
-            const produit = await getProduitById(localPanier[i].id);
-            const prixTotal = (produit.price *= localPanier[i].quantity);
+            const product = await getProduitById(localPanier[i].id);
+            const priceTotal = (product.price *= localPanier[i].quantity);
             panierHtml += `
                 <article class="cart__item" data-id=${localPanier[i].id}>
                 <div class="cart__item__img">
-                    <img src=${produit.imageUrl}>
+                    <img src=${product.imageUrl}>
                 </div>
                 <div class="cart__item__content">
                     <div class="cart__item__content__description">
-                        <h2>${produit.name}</h2>
+                        <h2>${product.name}</h2>
                         <p>${localPanier[i].couleur}</p>
-                        <p>${prixTotal}€</p>
+                        <p>${priceTotal}€</p>
                     </div>
                     <div class="cart__item__content__settings">
                         <div class="cart__item__content__settings__quantity">
                             <p>Qté : </p>
-                            <input data-id=${localPanier[i].id}  data-color=${localPanier[i].couleur} type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value=${localPanier[i].quantity}>
+                            <input data-id=${localPanier[i].id}  data-color=${localPanier[i].couleur} 
+                                type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value=${localPanier[i].quantity}>
                         </div>
                         <div class="cart__item__content__settings__delete">
                             <p data-id=${localPanier[i].id}  data-color=${localPanier[i].couleur} class="deleteItem">Supprimer</p>
@@ -70,12 +69,12 @@ async function affichageProduit() {
     modifyQtt();
     deleteProduct();
 };
-affichageProduit();
+affichageProduct();
 
 //----------------------------modification de la quantité
 function modifyQtt() {
     let itemsQtt = document.querySelectorAll(".itemQuantity");
-    console.log(document.querySelectorAll(".itemQuantity"));
+    
     itemsQtt.forEach((inputQtt) => {
         inputQtt.addEventListener("change", (event) => {
             event.preventDefault();
@@ -83,9 +82,9 @@ function modifyQtt() {
             const dataId = event.target.getAttribute("data-id");
             const dataColor = event.target.getAttribute("data-color");
             let panier = localStorage.getItem("panier");
-            let produit = JSON.parse(panier);
+            let product = JSON.parse(panier);
 
-            produit = produit.map((item, index) => {
+            product = product.map((item) => {
                 if (item.id === dataId && item.couleur === dataColor) {
                     item.quantity = input;
             } 
@@ -100,8 +99,8 @@ function modifyQtt() {
                 location.reload();
                 return;
             }
-            let produitString = JSON.stringify(produit);
-            localStorage.setItem("panier", produitString);
+            let productString = JSON.stringify(product);
+            localStorage.setItem("panier", productString);
             location.reload();
         });
     });
@@ -223,7 +222,7 @@ let btnCommander = document.getElementById('order');
 order.addEventListener('click' , (event) => {
     event.preventDefault();
 
-    let client = {
+    let contact = {
         firstName: firstName.value,
         lastName: lastName.value,
         address: address.value,
@@ -231,7 +230,7 @@ order.addEventListener('click' , (event) => {
         email: email.value,
     };
     
-    let produitClient = [];
+    let productContact = [];
 
     if(
         firstName.value === "" ||
@@ -251,15 +250,15 @@ order.addEventListener('click' , (event) => {
         alert("Vous n'avez pas renseigner correctement vos coordonnées.");
     } else {
         //Création d'un localStorage pour y mettre les données du formulaire
-        localStorage.setItem("client", JSON.stringify(client));
+        localStorage.setItem("contact", JSON.stringify(contact));
 
         for(let panier of localPanier) {
-            produitClient.push(panier.id)
+            productContact.push(panier.id)
         };
 
         let pageCommander = {
-            contact: client,
-            products: produitClient,
+            contact: contact,
+            products: productContact,
         };
         
         fetch("http://localhost:3000/api/products/order", {
