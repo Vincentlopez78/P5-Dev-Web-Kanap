@@ -1,7 +1,7 @@
-//------------------------récupération du LocalStorage
+//récupération du LocalStorage
 var localPanier = JSON.parse(localStorage.getItem("panier"));
 
-//------------------------recupération de l'API
+//recupération de l'API
 function getProduitById(id) {
     return fetch(`http://localhost:3000/api/products/${id}`)
         .then(function(res) {
@@ -9,7 +9,7 @@ function getProduitById(id) {
         })
         .catch((error) => {
             //une erreur est survenue
-            console.log('erreur');
+            console.log('error');
         })
         .then(function(response) {
             return response;
@@ -18,15 +18,17 @@ function getProduitById(id) {
 
 // Affichage du produit 
 async function affichageProduct() {
-    const panierCart = document.getElementById("cart__items");
     
+    const panierCart = document.getElementById("cart__items");
     let panierHtml = [];
-    //-------------------Si panier vide alors crée un tableau
+
+    //Si le panier est vide alors un message apparaît
     if (localPanier === null || localPanier == 0) {
         panierCart.textContent = "Pas de Kanap dans le panier";
     } else {
-        //---------------Si panier pas vide alors rajoute un produit
+        //Si le panier n'est pas vide on fait apparaitre le produit dans le tableau "panierHtml"
         for (i = 0; i < localPanier.length; i++) {
+            //On attend la récupération de l'id dans le LS
             const product = await getProduitById(localPanier[i].id);
             const priceTotal = (product.price *= localPanier[i].quantity);
             panierHtml += `
@@ -37,17 +39,17 @@ async function affichageProduct() {
                 <div class="cart__item__content">
                     <div class="cart__item__content__description">
                         <h2>${product.name}</h2>
-                        <p>${localPanier[i].couleur}</p>
+                        <p>${localPanier[i].color}</p>
                         <p>${priceTotal}€</p>
                     </div>
                     <div class="cart__item__content__settings">
                         <div class="cart__item__content__settings__quantity">
                             <p>Qté : </p>
-                            <input data-id=${localPanier[i].id}  data-color=${localPanier[i].couleur} 
+                            <input data-id=${localPanier[i].id}  data-color=${localPanier[i].color} 
                                 type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value=${localPanier[i].quantity}>
                         </div>
                         <div class="cart__item__content__settings__delete">
-                            <p data-id=${localPanier[i].id}  data-color=${localPanier[i].couleur} class="deleteItem">Supprimer</p>
+                            <p data-id=${localPanier[i].id}  data-color=${localPanier[i].color} class="deleteItem">Supprimer</p>
                         </div>
                     </div>
                 </div>
@@ -56,6 +58,8 @@ async function affichageProduct() {
         }
         panierCart.insertAdjacentHTML("beforeend", panierHtml);
     };
+    
+    //Calcul du prix et quantité totale
     let qttTotal = 0;
     let priceTotal = 0;
     for(i = 0; i < localPanier.length; i++) {
@@ -71,10 +75,11 @@ async function affichageProduct() {
 };
 affichageProduct();
 
-//----------------------------modification de la quantité
+//modification de la quantité
 function modifyQtt() {
     let itemsQtt = document.querySelectorAll(".itemQuantity");
     
+    //On écoute le changement de quantité
     itemsQtt.forEach((inputQtt) => {
         inputQtt.addEventListener("change", (event) => {
             event.preventDefault();
@@ -84,38 +89,44 @@ function modifyQtt() {
             let panier = localStorage.getItem("panier");
             let product = JSON.parse(panier);
 
+            //Si le produit est de même id et même couleur
             product = product.map((item) => {
-                if (item.id === dataId && item.couleur === dataColor) {
+                if (item.id === dataId && item.color === dataColor) {
+                    //Alors on a la nouvelle valeur dans l'input
                     item.quantity = input;
             } 
             return item;
             });
+            //Si la valeur est supérieure à 100 alors on a une alerte
             if (input > 100) {
-                alert("la quantité maximum autorisée est de cent Kanap");
+                window.alert("la quantité maximum autorisée est de 100 Kanap");
                 location.reload();
                 return;
+                //Si la valeur est égale à 0 on a aussi une alerte
             } else if (input <= 0) {
-                alert("Veuillez supprimé le Kanap");
+                alert("Veuillez supprimer le Kanap");
                 location.reload();
                 return;
             }
+            //On transforme les valeurs du produit en "string" pour le re-stocker dans le LS
             let productString = JSON.stringify(product);
             localStorage.setItem("panier", productString);
             location.reload();
         });
     });
 };
-//-----------------------------suppréssion du produit
+//suppression du produit
 function deleteProduct() {
     let deleteBtn = document.querySelectorAll(".deleteItem");
 
+    //On écoute au click sur le bouton "supprimer"
     for (let d = 0; d < deleteBtn.length; d++) {
         deleteBtn[d].addEventListener("click", (event) => {
             event.preventDefault();
             let buttonClick = event.target;
             buttonClick.parentElement.parentElement.parentElement.parentElement.remove();
 
-            //suppression dans le lS
+            //on modifie le tableau en supprimant dans le LS
             localPanier.splice(d, 1);
             localStorage.setItem("panier", JSON.stringify(localPanier));
 
@@ -125,29 +136,31 @@ function deleteProduct() {
     }
 };
 
-//----------------------------------------formulaire
+//formulaire
 
-//--------------------------------------récupération du DOM
+//récupération des id des champs du formulaire
 const firstName = document.getElementById('firstName');
 const lastName = document.getElementById('lastName');
 const address = document.getElementById('address');
 const city = document.getElementById('city');
 const email = document.getElementById('email');
 
-//-------------------------------------variable regex
+//variable regex
+
 let nameRegex = /^[a-zA-Z\-çñàéèêëïîôüù]{2,}$/; // regex pour firstName, lastName et city
 let addressRegex = /^[0-9a-zA-Z\s,.'-çñàéèêëïîôüù]{3,}$/;
 let emailRegex = /^[A-Za-z0-9\-\.]+@([A-Za-z0-9\-]+\.)+[A-Za-z0-9-]{2,4}$/;
 
-//------------------------------------Validation formulaire
+//Validation formulaire
 
-// firstname
+//firstname
 
+//On écoute quand on écrit dans le champ
 firstName.addEventListener('input' , (event) => {
     event.preventDefault();
     if(nameRegex.test(firstName.value) == false || firstName.value == "") {
         document.getElementById('firstNameErrorMsg').innerHTML =
-            "Prénom pas valide, veuillez mettre votre prénom";
+            "Prénom non valide, veuillez indiquer votre prénom";
             console.log(document.getElementById('firstNameErrorMsg'));
         return false;
     } else {
@@ -156,13 +169,13 @@ firstName.addEventListener('input' , (event) => {
     }
 });
 
-// lastname
+//lastname
 
 lastName.addEventListener('input' , (event) => {
     event.preventDefault();
     if(nameRegex.test(lastName.value) == false || lastName.value == "") {
         document.getElementById('lastNameErrorMsg').innerHTML =
-            "Nom pas valide, veuillez mettre votre nom";
+            "Nom non valide, veuillez indiquer votre nom";
             console.log(document.getElementById('lastNameErrorMsg'));
         return false;
     } else {
@@ -171,13 +184,13 @@ lastName.addEventListener('input' , (event) => {
     }
 });
 
-// address
+//address
 
 address.addEventListener('input' , (event) => {
     event.preventDefault();
     if(addressRegex.test(address.value) == false || address.value == "") {
         document.getElementById('addressErrorMsg').innerHTML =
-            "Adresse pas valide, veuillez mettre votre adresse";
+            "Adresse non valide, veuillez indiquer votre adresse";
             console.log(document.getElementById('addressErrorMsg'));
         return false;
     } else {
@@ -186,13 +199,13 @@ address.addEventListener('input' , (event) => {
     }
 });
 
-// city
+//city
 
 city.addEventListener('input' , (event) => {
     event.preventDefault();
     if(nameRegex.test(city.value) == false || city.value == "") {
         document.getElementById('cityErrorMsg').innerHTML =
-            "Ville pas valide, veuillez mettre votre ville";
+            "Ville non valide, veuillez indiquer votre ville";
             console.log(document.getElementById('cityErrorMsg'));
         return false;
     } else {
@@ -201,13 +214,13 @@ city.addEventListener('input' , (event) => {
     }
 });
 
-// email
+//email
 
 email.addEventListener('input' , (event) => {
     event.preventDefault();
     if(emailRegex.test(email.value) == false || email.value == "") {
         document.getElementById('emailErrorMsg').innerHTML =
-            "E-mail pas valide, veuillez mettre votre e-mail";
+            "E-mail non valide, veuillez indiquer votre e-mail";
             console.log(document.getElementById('emailErrorMsg'));
         return false;
     } else {
@@ -216,12 +229,14 @@ email.addEventListener('input' , (event) => {
     }
 });
 
-// bouton commander
+//bouton commander
 
 let btnCommander = document.getElementById('order');
+
 order.addEventListener('click' , (event) => {
     event.preventDefault();
 
+    // on crée un objet pour y mettre les valeurs du formulaire
     let contact = {
         firstName: firstName.value,
         lastName: lastName.value,
@@ -232,6 +247,7 @@ order.addEventListener('click' , (event) => {
     
     let productContact = [];
 
+    //Si on ne met rien dans les champs alors un message d'alerte apparaît
     if(
         firstName.value === "" ||
         lastName.value === "" ||
@@ -239,7 +255,9 @@ order.addEventListener('click' , (event) => {
         city.value === "" ||
         email.value === "" 
     ) {
-        alert("Veuillez remplir le formulaire pour passer la commande.");
+        window.alert("Veuillez remplir le formulaire pour passer la commande.");
+        //Et si les valeurs des champs ne respectent pas les conditions Regex 
+        //nous avons aussi un message d'alerte
     } else if (
         nameRegex.test(firstName.value) == false ||
         nameRegex.test(lastName.value) == false ||
@@ -247,7 +265,7 @@ order.addEventListener('click' , (event) => {
         nameRegex.test(city.value) == false ||
         emailRegex.test(email.value) == false
     ) {
-        alert("Vous n'avez pas renseigner correctement vos coordonnées.");
+        window.alert("Vous n'avez pas renseigné correctement vos coordonnées.");
     } else {
         //Création d'un localStorage pour y mettre les données du formulaire
         localStorage.setItem("contact", JSON.stringify(contact));
@@ -256,11 +274,14 @@ order.addEventListener('click' , (event) => {
             productContact.push(panier.id)
         };
 
+        //Un autre objet pour y mettre l'objet des données du formulaire
+        //et le tableau où elles sont stockées 
         let pageCommander = {
             contact: contact,
             products: productContact,
         };
         
+        //On appelle l'API pour le numéro de commande
         fetch("http://localhost:3000/api/products/order", {
             method: "POST",
             body: JSON.stringify(pageCommander),

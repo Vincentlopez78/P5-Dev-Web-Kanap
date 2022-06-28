@@ -14,7 +14,7 @@ fetch('http://localhost:3000/api/products')
             console.log('Il y a un problème: ', error);
         });
 
-// fonction qui permet d'insérer dans le HTML les données récupérer via l'API.
+// fonction qui permet d'insérer dans le HTML les données récupérées via l'API.
 function product(data) {
     for (let i = 0; i < data.length; i++) {
         const html = `<section id="items"> 
