@@ -97,7 +97,7 @@ function AddToPanier() {
         const indexProduit = (item) => (item.id === product.id) && (item.color === product.color);
         let index = panier.findIndex(indexProduit);
         
-        //Si l'index de l'objet "product" n'est pas dans le "panier" alors on push
+        //Si l'index de l'objet "product" n'est pas dans le "panier" alors on l'ajoute
         if (index == -1) {
             panier.push(product);
 
